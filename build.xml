@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<project name="webtest" basedir="." default="build">
+    <!-- //源文件目录  -->
+    <property name="src.dir" value="src"/>
+    <!-- //web 文件目录，也就是存储 JSPs 文件，web.xml，css，javascript 以及其它与 web 相关的文件的地方。  -->
+    <property name="web.dir" value="web"/>
+    <!-- //该项目的输出文件  -->
+    <property name="build.dir" value="${web.dir}/WEB-INF/classes"/>
+
+
+    <!-- //控制类路径 (master-classpath) 保存类路径的相关信息  -->
+    <path id="master-classpath">
+        <fileset dir="${web.dir}/WEB-INF/lib">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="${build.dir}"/>
+    </path>
+
+    <target name="build" description="Compile source tree java files" depends="build-war">
+        <mkdir dir="${build.dir}"/>
+        <javac destdir="${build.dir}"  encoding="UTF-8">
+            <src path="${src.dir}"/>
+            <classpath refid="master-classpath"/>
+        </javac>
+    </target>
+
+    <target name="build-war">
+<!--        生成位置及名称-->
+        <war destfile="${build.dir}/webtest.war" webxml="${web.dir}/WEB-INF/web.xml">
+            <fileset dir="${web.dir}">
+                <include name="**/*.*"/>
+            </fileset>
+<!--            排除jar-->
+<!--            <lib dir="thirdpartyjars">-->
+<!--                <exclude name="portlet.jar"/>-->
+<!--            </lib>-->
+            <classes dir = "${build.dir}"/>
+        </war>
+    </target>
+
+    <!-- //删除构建文件夹中的所有文件  -->
+    <target name="clean" description="Clean output directories">
+        <delete>
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </delete>
+    </target>
+</project>
